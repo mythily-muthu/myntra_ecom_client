@@ -2,18 +2,43 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { getProducts } from "../redux/productsSlice";
+import ProductsCard from "../components/ProductsCard";
 
 const Homepage = () => {
   let navigate = useNavigate();
+  let dispatch = useDispatch();
+  const userState = useSelector((state) => state.user.user);
+  const products = useSelector((state) => state.products.products);
   const [loading, setLoading] = useState(true);
-  const [products, setProducts] = useState([]);
+  // const [products, setProducts] = useState([]);
 
+  useEffect(() => {
+    if (!userState) {
+      navigate("/login");
+    }
+  }, [userState]);
+
+  // const getAllProducts = async () => {
+  //   let api_url = "http://localhost:7000/api/products/";
+  //   let res = await axios.get(api_url);
+  //   setProducts(res.data);
+  //   setLoading(false);
+  //   console.log(setProducts);
+  // };
   const getAllProducts = async () => {
-    let api_url = "http://localhost:7000/api/products/";
-    let res = await axios.get(api_url);
-    setProducts(res.data);
-    setLoading(false);
-    console.log(setProducts);
+    try {
+      let api_url = "http://localhost:7000/api/products/";
+      let res = await axios.get(api_url);
+      if (res.status === 200) {
+        dispatch(getProducts(res.data.products));
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log("error", error.message);
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -34,27 +59,7 @@ const Homepage = () => {
         ) : (
           <div className="flex gap-5 justify-center py-40 w-full">
             {products.map((item) => {
-              return (
-                <div
-                  key={item._id}
-                  className="flex flex-col w-[300px] gap-y-4 "
-                  onClick={() => handleSingleProduct(item._id)}
-                >
-                  <div className=" w-full h-[300px]">
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      className="h-full w-full object-contain rounded-xl p-4 border border-yellow-400 shadow-md cursor-pointer"
-                    />
-                  </div>
-                  <p className="tracking-widest font-normal text-base">
-                    {item.title}
-                  </p>
-                  <p className="text-sm text-gray-400 tracking-widest hover:font-semibold cursor-pointer ">
-                    view in detail
-                  </p>
-                </div>
-              );
+              return <ProductsCard item={item} click={handleSingleProduct} />;
             })}
           </div>
         )}

@@ -5,8 +5,11 @@ import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import Button from "../components/Button";
 import { ImSpinner10 } from "react-icons/im";
+import { useDispatch } from "react-redux";
+import { loginFailure, loginSuccess } from "../redux/userSlice";
 
 const Login = () => {
+  const dispatch = useDispatch();
   let navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -33,12 +36,14 @@ const Login = () => {
         values
       );
       if (res.status === 200) {
-        console.log("Login successfull");
+        // console.log("Login successfull");
+        dispatch(loginSuccess(res.data.userDetails));
         navigate("/");
       }
     } catch (error) {
-      console.error("Error during login:", error.message);
+      dispatch(loginFailure(error.message));
       setLoading(false);
+      console.error("Error during login:", error.message);
     }
   };
   return (

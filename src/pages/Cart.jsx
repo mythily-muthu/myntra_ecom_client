@@ -1,7 +1,6 @@
 import React from "react";
 import Navbar from "../components/Navbar";
 import products from "../data.json";
-import Button from "../components/Button";
 import ProductCard from "../components/ProductCard";
 const Cart = () => {
   const handleCart = (item) => {
