@@ -5,7 +5,7 @@ const ProductsCard = ({ item, click }) => {
     <div
       key={item._id}
       className="flex flex-col w-[300px] gap-y-4 "
-      click={() => click(item._id)}
+      onClick={() => click(item._id)}
     >
       <div className=" w-full h-[300px]">
         <img

@@ -10,9 +10,10 @@ const Homepage = () => {
   let navigate = useNavigate();
   let dispatch = useDispatch();
   const userState = useSelector((state) => state.user.user);
-  const products = useSelector((state) => state.products.products);
+  const productsState = useSelector((state) => state.products.products);
   const [loading, setLoading] = useState(true);
   // const [products, setProducts] = useState([]);
+  // console.log("productsState:", productsState);
 
   useEffect(() => {
     if (!userState) {
@@ -27,12 +28,14 @@ const Homepage = () => {
   //   setLoading(false);
   //   console.log(setProducts);
   // };
+
   const getAllProducts = async () => {
     try {
       let api_url = "http://localhost:7000/api/products/";
       let res = await axios.get(api_url);
       if (res.status === 200) {
-        dispatch(getProducts(res.data.products));
+        dispatch(getProducts(res.data));
+
         setLoading(false);
       }
     } catch (error) {
@@ -49,7 +52,7 @@ const Homepage = () => {
     navigate(`/product/${productId}`);
   };
   return (
-    <div className="w-full flex  ">
+    <div className="w-full flex ">
       <div className="flex flex-col w-full">
         <Navbar />
         {loading ? (
@@ -58,7 +61,7 @@ const Homepage = () => {
           </p>
         ) : (
           <div className="flex gap-5 justify-center py-40 w-full">
-            {products.map((item) => {
+            {productsState.map((item) => {
               return <ProductsCard item={item} click={handleSingleProduct} />;
             })}
           </div>
